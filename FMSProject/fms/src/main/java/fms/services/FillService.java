@@ -18,12 +18,12 @@ public class FillService
     private int count = 0;
     private String descendant = "";
     private PersonDAO personDAO = new PersonDAO();
-    private UserDAO userDAO = new UserDAO();
+//    private UserDAO userDAO = new UserDAO();
     private EventDAO eventDAO = new EventDAO();
 
 
 
-    public String setDescendant(String userName)
+    public void setDescendant(String userName)
     {
         descendant = userName;
     }
@@ -50,8 +50,8 @@ public class FillService
         ArrayList<String> femaleNames = new ArrayList<>();
 
         femaleNames.add("Beyonce");
-        femaleNames.add("Hillary");
-        femaleNames.add("Katelyn");
+        femaleNames.add("Elen");
+        femaleNames.add("Hermione");
         femaleNames.add("Jennifer");
         femaleNames.add("Serena");
 
@@ -70,8 +70,8 @@ public class FillService
         lastNames.add("Carr");
         lastNames.add("Tyson");
         lastNames.add("Knowles");
-        lastNames.add("Clinton");
-        lastNames.add("Jenner");
+        lastNames.add("DeGeneres");
+        lastNames.add("Granger");
         lastNames.add("Lawrence");
         lastNames.add("Williams");
 
@@ -102,25 +102,33 @@ public class FillService
         //registerService will take charge of adding the new user (to the user table AND the people table)
         //and THEN calling this method
 
+//        System.out.println(p.getFirstName());
+        descendant = p.getDescendant();
+        try {
 
+            if ((personDAO.getPerson(p.getFather()) == null) && (count < numGeneration)) {
+                Person dad = new Person(descendant, p.getFather(), randomMale(), randomApellido(), "m", randomId(), randomId(), p.getMother());
+                personDAO.addPerson(dad);
+                count++;
+                makePeople(dad, dad.getFather(), numGeneration);
+            }
+            if ((personDAO.getPerson(p.getMother()) == null) && (count < numGeneration)) {
+                //when creating the new mom I've got to try to connect her to the most recent dad in the spouse column
 
-        if ((personDAO.getPerson(p.getFather()) == null) && (count < numGeneration))
+                String dadSpouseID = personDAO.getPerson(p.getFather()).getSpouse();
+                Person mom = new Person(descendant, dadSpouseID, randomFemale(), randomApellido(), "f", randomId(), randomId(), randomId());
+                personDAO.addPerson(mom);
+                count++;
+                makePeople(mom, mom.getFather(), numGeneration);
+            }
+
+            count--;
+        }catch(SQLException e)
         {
-            Person dad = new Person(descendant,randomId(),randomMale(),randomApellido(),"m",randomId(),randomId(),randomId());
-            personDAO.addPerson(dad);
-            count++;
-            makePeople(dad, dad.getFather(), numGeneration);
-        }
-        if ((personDAO.getPerson(p.getMother()) == null) && (count < numGeneration))
-        {
-            //when creating the new mom I've got to try to connect her to the most recent dad in the spouse column
-            Person mom = new Person(descendant, randomId(), randomFemale(), randomApellido(), "f", randomId(), randomId(), randomId());
-            personDAO.addPerson(mom);
-            count++;
-            makePeople(mom, mom.getFather(), numGeneration);
-        }
+            e.printStackTrace();
+            System.out.println("Failure in FillService makePeople()");
 
-        count--;
+        }
 
 
 

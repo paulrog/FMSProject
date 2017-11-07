@@ -10,11 +10,19 @@ import java.util.UUID;
 
 
 import fms.models.User;
+import fms.models.Person;
 import fms.services.FillService;
 
 
 public class UserDAO
 {
+
+    private String descendant = "";
+    private FillService fillService = new FillService();
+//    Bad to declare it for some reason. Better to set it to null;
+//    private FillService fillService = new FillService();
+    private PersonDAO personDAO = new PersonDAO();
+    private UserDAO userDAO = null;
     private User aUser = null;
     private Database db = new Database();
     public UserDAO()
@@ -406,6 +414,8 @@ public class UserDAO
 
 
 
+
+
             safeClose(con, stmt);
         }
         catch(SQLException e)
@@ -418,19 +428,23 @@ public class UserDAO
 
         storeAuthToken(personId);
         makeUserIntoPerson(user);
-        setDescendantForFillService(aUser.getUserName());
+//        setDescendantForFillService(aUser.getUserName());
+
+        Person p = personDAO.getPerson(aUser.getPersonId());
+        String dadID = p.getFather();
+        fillService.makePeople(p, dadID, 2);
+
 
 
     }
 
 
 
-    public void setDescendantForFillService(String userName)
-    {
-        FillService fillService = new FillService();
-
-        fillService.setDescendant(userName);
-    }
+//    public void setDescendantForFillService(String userName)
+//    {
+//
+//        fillService.setDescendant(userName);
+//    }
 
 
 

@@ -4,6 +4,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import fms.database.PersonDAO;
+import fms.models.Person;
+
 import static org.junit.Assert.*;
 
 /**
@@ -28,4 +31,20 @@ public class FillServiceTest {
         fillService.testRandoms();
     }
 
+    @Test
+    public void makePeople() throws Exception {
+
+        FillService fillService = new FillService();
+        PersonDAO personDAO = new PersonDAO();
+
+        Person p = personDAO.getPersonByName("Paul");
+        String dadID = p.getFather();
+
+//        System.out.println(p.toString());
+
+
+
+
+        fillService.makePeople(p, dadID, 2);
+    }
 }

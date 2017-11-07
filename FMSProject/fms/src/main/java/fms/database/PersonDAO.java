@@ -92,9 +92,11 @@ public class PersonDAO
     {
         String sqlGet = "Select * FROM people WHERE personId = '" + personId + "'";
         PreparedStatement stmt = null;
+        Connection con = null;
+
 
         try{
-            Connection con = db.openConnection();
+            con = db.openConnection();
             stmt = con.prepareStatement(sqlGet);
 
             ResultSet resultSet = stmt.executeQuery();
@@ -121,7 +123,6 @@ public class PersonDAO
                 return person;
             }
 
-            safeClose(con,stmt);
         }
         catch(SQLException e)
         {
@@ -131,8 +132,70 @@ public class PersonDAO
             person = null;
 
         }
+
+        finally {
+            //I did this because before I was returning the person object before calling the safeClose() method.
+            //The finally statement basically serves to run whatever it contains even if you've aready returned something
+            safeClose(con,stmt);
+
+        }
         return person;
     }
+
+
+
+    public Person getPersonByName(String firstName)throws SQLException
+    {
+        String sqlGet = "Select * FROM people WHERE firstName = '" + firstName + "'";
+        PreparedStatement stmt = null;
+        Connection con = null;
+
+        try{
+            con = db.openConnection();
+            stmt = con.prepareStatement(sqlGet);
+
+            ResultSet resultSet = stmt.executeQuery();
+//            ResultSetMetaData metaData = resultSet.getMetaData();
+//
+//            metaData.
+
+            while (resultSet.next())
+            {
+                //either figure out how to grab a whole User object from the result set or
+                //piece one together from the individual data members.
+                String descendant = resultSet.getString("descendant");
+                String personId = resultSet.getString("personId");
+                firstName = resultSet.getString("firstName");
+                String lastName = resultSet.getString("lastName");
+                String gender = resultSet.getString("gender");
+                String father = resultSet.getString("father");
+                String mother = resultSet.getString("mother");
+                String spouse = resultSet.getString("spouse");
+
+
+                Person person = new Person(descendant, personId, firstName, lastName, gender, father, mother, spouse);
+
+                return person;
+            }
+
+        }
+        catch(SQLException e)
+        {
+            e.printStackTrace();
+            System.out.println("Failure in UserDAO getUserByName()");
+            db.closeConnection(false);
+            person = null;
+
+        }
+        finally {
+            //I did this because before I was returning the person object before calling the safeClose() method.
+            //The finally statement basically serves to run whatever it contains even if you've aready returned something
+            safeClose(con,stmt);
+
+        }
+        return person;
+    }
+
 
     public void deletePerson(Person person)throws SQLException
     {
