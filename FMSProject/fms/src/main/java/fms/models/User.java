@@ -10,30 +10,7 @@ public class User
     String firstName;
     String lastName;
     String gender;
-    String authToken;
-
-    public User(String userName, String password, String email, String firstName, String lastName, String gender, String authToken)
-    {
-        this.userName = userName;
-        this.password = password;
-        this.email = email;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.gender = gender;
-        this.authToken = authToken;
-
-        //Generate a random authToken here
-//        randomAuthToken();
-
-    }
-
-    public void randomAuthToken()
-    {
-        UUID uuid = UUID.randomUUID();
-        String random = uuid.toString();
-
-        this.authToken = random;
-    }
+    String personId;
 
 
     public String getUserName() {
@@ -84,13 +61,35 @@ public class User
         this.gender = gender;
     }
 
-    public String getAuthToken() {
-        return authToken;
+    public String getPersonId() {
+        return personId;
     }
 
-    public void setAuthToken(String authToken) {
-        this.authToken = authToken;
+    public void setPersonId(String personId) {
+        this.personId = personId;
     }
+
+    public User(String userName, String password, String email, String firstName, String lastName, String gender, String personId)
+    {
+        this.userName = userName;
+        this.password = password;
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.gender = gender;
+        this.personId = personId;
+    }
+
+//    public void randomAuthToken()
+//    {
+//        UUID uuid = UUID.randomUUID();
+//        String random = uuid.toString();
+//
+//        this.authToken = random;
+//    }
+
+
+
 
     @Override
     public String toString()
@@ -103,7 +102,7 @@ public class User
         sb.append("firstName: " + getFirstName() + "\n");
         sb.append("lastName: " + getLastName() + "\n");
         sb.append("gender: " + getGender() + "\n");
-        sb.append("authToken: " + getAuthToken() + "\n");
+        sb.append("personId: " + getPersonId() + "\n");
         return sb.toString();
     }
 

@@ -48,7 +48,7 @@ public class UserDAOTest {
 
         UserDAO userDAO = new UserDAO();
 
-        userDAO.addUser(user1, "users");
+        userDAO.addUser(user);
     }
 
 
